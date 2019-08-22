@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+    platform_api:
+        image: node:10-alpine
+        container_name: platform_api
+        working_dir: /mech4u/platform_api/
+        command: yarn start:dev
+        volumes:
+            - ./:/mech4u/platform_api/:consistent
+        ports:
+            - 8000:8000
+
+networks:
+    default:
+        external:
+            name: mech4u_network
