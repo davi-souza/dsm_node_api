@@ -62,3 +62,6 @@ typings/
 
 # vim
 **/*.swp
+
+# local db
+**/platform_api_db

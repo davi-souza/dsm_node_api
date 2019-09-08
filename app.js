@@ -15,12 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/files', filesRouter);
+app.use('/api/file', filesRouter);
 
 const schema = require('./graphql/schemas');
 const graphiql = true;
 
-app.use('/graphql', graphqlHTTP({
+app.use('/api/graphql', graphqlHTTP({
 	schema,
 	graphiql,
 }));

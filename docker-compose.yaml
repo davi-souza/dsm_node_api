@@ -11,6 +11,18 @@ services:
         ports:
             - 8000:8000
 
+    platform_api_db:
+        image: postgres:11-alpine
+        container_name: platform_api_db
+        environment:
+            POSTGRES_PASSWORD: 123
+            POSTGRES_USER: mech4u
+            POSTGRES_DB: mech4u_dev
+        volumes:
+            - ./platform_api_db/:/var/lib/postgresql/data/:consistent
+        ports:
+            - 5432:5432
+
 networks:
     default:
         external:

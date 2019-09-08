@@ -3,21 +3,28 @@ const {
 	GraphQLNonNull,
 	GraphQLString,
 	GraphQLInt,
+	GraphQLList,
 } = require('graphql');
 
-const specific_weight_type = new GraphQLObjectType({
-	name: 'SpecificWeight',
+const MaterialType = new GraphQLObjectType({
+	name: 'MaterialType',
 	fields: () => ({
-		unit: {
+		id: {
 			type: new GraphQLNonNull(GraphQLString),
 		},
-		value: {
+		name: {
+			type: new GraphQLNonNull(GraphQLString),
+		},
+		price_per_kg: {
+			type: new GraphQLNonNull(GraphQLInt),
+		},
+		specific_weight: {
 			type: new GraphQLNonNull(GraphQLInt),
 		},
 	}),
 });
 
-const material_type = new GraphQLObjectType({
+const Material = new GraphQLObjectType({
 	name: 'Material',
 	fields: () => ({
 		id: {
@@ -26,16 +33,13 @@ const material_type = new GraphQLObjectType({
 		name: {
 			type: new GraphQLNonNull(GraphQLString),
 		},
-		category: {
-			type: new GraphQLNonNull(GraphQLString),
-		},
-		price: {
-			type: new GraphQLNonNull(GraphQLInt),
-		},
-		specific_weight: {
-			type: new GraphQLNonNull(specific_weight_type),
+		material_types: {
+			type: new GraphQLList(MaterialType),
 		},
 	}),
 });
 
-module.exports = material_type;
+module.exports = {
+	Material,
+	MaterialType,
+};

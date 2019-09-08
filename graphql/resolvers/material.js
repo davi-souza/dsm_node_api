@@ -1,9 +1,9 @@
-const { get_materials } = require('../../libs/dynamodb/material');
+const { get_materials } = require('../../services/db/material');
 
-async function get_materials_resolver() {
+async function QueryMaterialsResolver() {
 	return await get_materials();
 };
 
 module.exports = {
-	get_materials_resolver,
+	QueryMaterialsResolver,
 };
