@@ -234,7 +234,7 @@ module.exports = {
 				material_type: [
 					{
 						id: uuid_v4(),
-						name: 'Cobra SAE CA110 / ASTM C11000',
+						name: 'Cobre SAE CA110 / ASTM C11000',
 						price_per_kg: 8000,
 						specific_weight: 894,
 						created_at: new Date(),
