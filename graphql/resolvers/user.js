@@ -8,7 +8,6 @@ async function MutationLoginResolver(email, password) {
 }
 
 async function MutationRegisterUserResolver(name, phone_number, email, password, addresses) {
-	console.log(addresses);
 	return await register_user(name, phone_number, email, password, addresses);
 }
 

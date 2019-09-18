@@ -18,7 +18,9 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 
 		const { originalname, buffer } = req.file;
 
-		if (originalname.split('.').pop() !== 'step') {
+		const extension = originalname.split('.').pop(); 
+
+		if (!['stp', 'step'].includes(extension)) {
 			throw new CustomError('O arquivo deve ter extensão ".step"', 400);
 		}
 
@@ -52,24 +54,32 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			materials_promise,
 		]);
 
-		const initial_price = part_price_calc(
-			new_part,
-			materials[0].material_types[0],
-		);
-
-		const payload = {
+		const unit_price = part_price_calc({
 			id: new_part.id,
 			name: new_part.name,
-			material_type_id: materials[0].material_types[0].id,
-			unit_price: initial_price,
-			qtd: 1,
-		};
+			material_type: materials[0].material_types[0],
+			heat_treatment: null,
+			superficial_treatment: null,
+			screw_amount: 0,
+			amount: 1,
+		});
 
 		res
 			.status(201)
 			.json({
 				message: 'Upload com sucesso',
-				part: payload,
+				part: {
+					id: new_part.id,
+					name: new_part.name,
+					material_type_id: materials[0].material_types[0].id,
+					heat_treatment_id: null,
+					superficial_treatment_id: null,
+					tolerance: null,
+					finishing: null,
+					screw_amount: 0,
+					amount: 1,
+					unit_price,
+				},
 			})
 			.end();
 

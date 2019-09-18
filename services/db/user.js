@@ -21,27 +21,38 @@ async function login(email, password) {
 				{
 					model: db.UserAddress,
 					as: 'addresses',
-					attributes: ['id', 'address'],
+					attributes: [
+						'id',
+						'state',
+						'municipality',
+						'address',
+						'address_number',
+						'complement',
+						'postcode',
+					],
 				},
 			],
 			where: { email },
 		});
 
 		if (!fetched_user) {
-			throw new CustomError('User not found', 404);
+			throw new CustomError('Usuário não encontrado', 404);
 		}
 
 		const password_match = await password_verify(fetched_user.password, password);
 
 		if (!password_match) {
-			throw new CustomError('Wrong password', 401);
+			throw new CustomError('Senha incorreta', 401);
 		}
+
+		const addresses = fetched_user.dataValues.addresses.map(address => ({
+			...address.dataValues,
+		}));
+		console.log(addresses);
 
 		const jwt_payload = {
 			...fetched_user.dataValues,
-			addresses: fetched_user.dataValues.addresses.map(address => ({
-				...address.dataValues,
-			})),
+			addresses,
 		};
 
 		delete jwt_payload['password'];
@@ -50,6 +61,7 @@ async function login(email, password) {
 			name: jwt_payload.name,
 			email: jwt_payload.email,
 			phone_number: jwt_payload.phone_number,
+			addresses,
 		};
 
 		return {
@@ -58,7 +70,12 @@ async function login(email, password) {
 		};
 	} catch (err) {
 		console.warn(err);
-		throw new CustomError(err.message, 500);
+
+		if (err instanceof CustomError) {
+			throw err;
+		}
+
+		throw new CustomError('Não foi possível fazer login', 500);
 	}
 }
 
@@ -69,7 +86,9 @@ async function login(email, password) {
  * @param {string} phone_number	User's phone number
  * @param {string} email		User's email
  * @param {string} password		User's password
- * @param {string[]} addresses	User's addresses
+ * @param {object[]} addresses	User's addresses
+ *            {string} address
+ *            {string} postcode
  * @return {object} 			Login payload
  */
 async function register_user(name, phone_number, email, password, addresses) {
@@ -83,8 +102,10 @@ async function register_user(name, phone_number, email, password, addresses) {
 			email,
 			password: hashed_password,
 			addresses: addresses.map(address => ({
+				...address,
 				id: uuid_v4(),
-				address,
+				address: address.address.trim(),
+				postcode: address.postcode.trim().replace(/[\-\.\s]g/, ''),
 			})),
 		}, {
 			include: [{
@@ -100,7 +121,7 @@ async function register_user(name, phone_number, email, password, addresses) {
 			})),
 		};
 
-		delete jwt_payload['password'];
+		// delete jwt_payload['password'];
 
 		const user_payload = {
 			name: jwt_payload.name,

@@ -7,7 +7,11 @@ const {
 	LoginMutation,
 	RegisterUserMutation,
 } = require('../mutations/user');
-const { ChangePartOptionsMutation } = require('../mutations/part');
+const {
+	ChangePartOptionsMutation,
+	PartBatchInfoMutation,
+} = require('../mutations/part');
+const { PlaceOrderMutation } = require('../mutations/order');
 
 const rootQuery = new GraphQLObjectType({
 	name: 'RootQuery',
@@ -22,6 +26,8 @@ const rootMutation = new GraphQLObjectType({
 		login: LoginMutation,
 		changePartOptions: ChangePartOptionsMutation,
 		registerUser: RegisterUserMutation,
+		partBatchInfo: PartBatchInfoMutation,
+		placeOrder: PlaceOrderMutation,
 	}),
 });
 

@@ -15,7 +15,7 @@ module.exports = {
 			},
 			user_address_id: {
 				type: Sequelize.UUID,
-				allowNull: true,
+				allowNull: false,
 				references: {
 					model: 'user_address',
 					key: 'id',
@@ -23,25 +23,34 @@ module.exports = {
 			},
 			status: {
 				type: Sequelize.ENUM(
+					'AWAITING_CONFIRMATION',
 					'PENDING',
 					'PROCESSING',
 					'DELIVERING',
 					'FINISHED'
 				),
 				allowNull: false,
-				defaultValue: 'PENDING',
-			},
-			estimated_delivery: {
-				type: Sequelize.DATE,
-				allowNull: false,
+				defaultValue: 'AWAITING_CONFIRMATION',
 			},
 			supplier_payment: {
 				type: Sequelize.BIGINT,
 				allowNull: false,
 			},
-			additional_info: {
-				type: Sequelize.BLOB,
-				allowNull: true,
+			mech4u_payment: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
+			},
+			delivery_cost: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
+			},
+			delivery_at: {
+				type: Sequelize.DATEONLY,
+				allowNull: false,
+			},
+			tax_payment: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
 			},
 			created_at: {
 				type: Sequelize.DATE,
@@ -50,6 +59,8 @@ module.exports = {
 			},
 			updated_at: {
 				type: Sequelize.DATE,
+				defaultValue: Sequelize.NOW,
+				allowNull: false,
 			},
 			deleted_at: {
 				type: Sequelize.DATE,

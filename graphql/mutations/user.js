@@ -4,8 +4,9 @@ const {
 	GraphQLList,
 } = require('graphql');
 const {
-	RegisterInput,
 	UserLogin,
+	LoginInputType,
+	RegisterUserInputType,
 } = require('../types/user');
 const {
 	MutationLoginResolver,
@@ -16,23 +17,20 @@ module.exports = {
 	LoginMutation: {
 		type: new GraphQLNonNull(UserLogin),
 		args: {
-			email: { type: new GraphQLNonNull(GraphQLString), },
-			password: { type: new GraphQLNonNull(GraphQLString), },
+			input: { type: new GraphQLNonNull(LoginInputType), },
 		},
-		resolve: async (_, {email, password}) => {
+		resolve: async (_, {input}) => {
+			const {email, password} = input;
 			return await MutationLoginResolver(email, password);
 		},
 	},
 	RegisterUserMutation: {
 		type: new GraphQLNonNull(UserLogin),
 		args: {
-			name: { type: new GraphQLNonNull(GraphQLString), },
-			phone_number: { type: new GraphQLNonNull(GraphQLString), },
-			email: { type: new GraphQLNonNull(GraphQLString), },
-			password: { type: new GraphQLNonNull(GraphQLString), },
-			addresses: { type: new GraphQLNonNull( new GraphQLList(GraphQLString) ), },
+			input: { type: new GraphQLNonNull(RegisterUserInputType), },
 		},
-		resolve: async (_, {name, phone_number, email, password, addresses}) => {
+		resolve: async (_, {input}) => {
+			const {name, phone_number, email, password, addresses} = input;
 			return await MutationRegisterUserResolver(name, phone_number, email, password, addresses);
 		},
 	},

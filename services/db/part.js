@@ -25,14 +25,15 @@ async function create_part(name, storage, volume, raw_material_volume) {
 		};
 	} catch (err) {
 		console.warn(err);
-		throw new CustomError(err.message, 500);
+
+		throw new CustomError('Não foi possível criar uma peça', 500);
 	}
 }
 
 /** Fetch parts
  *  @return {object[]}	Part model
  */
-async function get_parts() {
+async function get_parts(where = {}) {
 	try {
 		const parts = await db.Part.findAll({
 			order: [
@@ -40,13 +41,27 @@ async function get_parts() {
 				['name', 'ASC'],
 			],
 			raw: true,
+			where,
 		});
 
 		return parts;
 	} catch (err) {
 		console.warn(err);
-		throw new CustomError(err.message, 500);
+
+		throw new CustomError('Não foi possível consultar a(s) peça(s)', 500);
 	}
+}
+
+/**
+ * Fetch parts by an array of ids
+ * @return {object[]}	Part model
+ */
+function get_parts_by_ids(ids) {
+	return get_parts({
+		id: {
+			[db.Sequelize.Op.in]: Array.from(new Set(ids)),
+		},
+	});
 }
 
 /** Fetch a part by primary key 
@@ -63,12 +78,14 @@ async function get_part(id) {
 		return part;
 	} catch (err) {
 		console.warn(err);
-		throw new CustomError(err.message, 500);
+
+		throw new CustomError('Não foi possível consultar a peça', 500);
 	}
 }
 
 module.exports = {
 	create_part,
 	get_parts,
+	get_parts_by_ids,
 	get_part,
 };

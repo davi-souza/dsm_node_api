@@ -27,7 +27,27 @@ class Supplier extends Model {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			state: {
+				type: Sequelize.STRING,
+				allowNull: false,
+			},
+			municipality: {
+				type: Sequelize.STRING,
+				allowNull: false,
+			},
 			address: {
+				type: Sequelize.STRING,
+				allowNull: false,
+			},
+			address_number: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			complement: {
+				type: Sequelize.STRING,
+				allowNull: true,
+			},
+			postcode: {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},

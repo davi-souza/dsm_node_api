@@ -1,69 +1,106 @@
 const uuid_v4 = require('uuid/v4');
 const db = require('../../models');
-const { get_material_type } = require('../../db/material');
-const { get_part } = require('../../db/part');
-const { part_price_calc } = require('../../analysis/price');
 const { CustomError } = require('../../libs/error');
+
+function supplier_payment_calc(prices) {
+	return Object.entries(prices).reduce((sum, [key, value]) => {
+		if (!['mech4u', 'total'].includes(key)) {
+			sum += value;
+		}
+		return sum;
+
+	}, 0);
+}
+
+function process_item(item) {
+	return {
+		id: uuid_v4(),
+		part_id: item.part.id,
+		amount: item.amount,
+		material_type_id: item.material_type.id,
+		heat_treatment_id: item.heat_treatment.id,
+		superficial_treatment_id: item.superficial_treatment.id,
+		tolerance: Math.ceil(item.tolerance * 100),
+		finishing: item.finishing,
+		raw_material_price: item.unit_prices.raw_material,
+		volume_diff_price: item.unit_prices.volume_diff,
+		heat_treatment_price: item.unit_prices.heat_treatment,
+		superficial_treatment_price: item.unit_prices.superficial_treatment,
+		tolerance_price: item.unit_prices.superficial_treatment,
+		finishing_price: item.unit_prices.finishing,
+		screw_price: item.unit_prices.screws,
+		supplier_profit: item.unit_prices.supplier,
+		mech4u_profit: item.unit_prices.mech4u,
+	};
+}
 
 /**
  * Creates a order
- * @param {string} address				User's address (uuid)
- * @param {object[]} parts				Parts info
- *            {string} id				Part's id (uuid)
- *            {string} material_type_id	Part's material_type (uuid)
- *            {number} qtd				Part's qtd
+ *
+ * OBS: "unit_prices" and "prices" have the same keys
+ *     - supplier
+ *     - mech4u
+ *     - raw_material
+ *     - volume_diff
+ *     - heat_treatment
+ *     - superficial_treatment
+ *     - tolerance
+ *     - finishing
+ *     - screws
+ *     - total
+ * @params {object[]} items
+ *             {object} part					Part model
+ *             {object} material_type			Material Type model
+ *             {number} tolerance				Tolerance (can be null and not int)
+ *             {string} finishing				Finishing (can be null and not int)
+ *             {object} heat_treatment			Heat treatment model (can be null)
+ *             {object} superficial_treatment	Superficial treatment model (can be null)
+ *             {number} screw_amount			Number of screws (can be 0)
+ *             {number} amount					Number of parts (minimum 1)
+ *             {object} unit_prices				Object with the prices categories of the part
+ * @param {object} prices						Object with total of the prices categories
+ * @param {object} delivery						Object with delivery info
+ *            {number} price					Delivery price (int)
+ *            {date} at							Delivery estimated date
+ * @param {object} user_info
+ *            {object} user						User model
+ *            {object} address					User Address model
  */
-async function place_order(address, parts) {
-	try {
-		let total = 0;
-
-		const part_to_create = [];
-
-		for (const part of parts) {
-			const [
-				fetched_part,
-				fetched_material_type
-			] = await Promise.all([
-				get_part(part.id),
-				get_material_type(part.material_type_id)
-			]);
-
-			const price = part_price_calc(fetched_part, fetched_material_type);
-
-			parts_to_create.push({
-				...part,
-				unit_price: price,
-			});
-
-			total += price;
-		}
-
-		const order = db.Order.create({
+function place_order(items, prices, delivery, user_info) {
+	return db.sequelize.transaction(transaction => {
+		const create_order_promise = db.Order.create({
 			id: uuid_v4(),
-			orderParts: parts_to_create.map(part => ({
-				id: uuid_v4(),
-				qtd: part.qtd,
-				unit_price: part.unit_price,
-				material_type_id: part.material_type,
-				part_id: part.id,
-			})),
-			address,
+			status: 'PENDING',
+			user_address_id: user_info.address.id,
+			supplier_payment: supplier_payment_calc(prices),
+			mech4u_payment: prices.mech4u,
+			delivery_cost: delivery.price,
+			delivery_at: delivery.at,
+			tax_payment: 0,
+			orderParts: items.map(process_item),
 		}, {
-			include: [
-				{
-					model: db.OrderPart,
-					as: 'orderParts',
-				},
-				{
-					model: db.UserAddress,
-					as: 'address',
-				},
-			],
+			transaction,
+			include: [{
+				model: db.OrderPart,
+				as: 'orderParts',
+			}],
 		});
-	} catch (err) {
-		console.warn(err);
-	
-		throw err;
-	}
 
+		const part_user_promises = items.map(item => {
+			return db.Part.update({
+				user_id: user_info.user.id,
+			}, {
+				where: {
+					id: item.part.id,
+				},
+				transaction,
+			});
+		});
+
+		return Promise.all([create_order_promise, ...part_user_promises]);
+	}).catch(console.warn);
 }
+
+module.exports = {
+	place_order,
+};

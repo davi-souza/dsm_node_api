@@ -1,32 +1,78 @@
 const {
-	GraphQLObjectType,
-	GraphQLNonNull,
-	GraphQLString,
+	GraphQLEnumType,
+	GraphQLFloat,
+	GraphQLInputObjectType,
 	GraphQLInt,
 	GraphQLList,
+	GraphQLNonNull,
+	GraphQLObjectType,
+	GraphQLString,
 } = require('graphql');
 
-const FrontPartType = new GraphQLObjectType({
-	name: 'FrontPartType',
+const {
+	FinishingEnumType,
+	DeliveryEnumType,
+} = require('./enums');
+
+const BatchDeliveryType = new GraphQLObjectType({
+	name: 'BatchDeliveryType',
 	fields: () => ({
-		id: {
-			type: new GraphQLNonNull(GraphQLString),
-		},
-		name: {
-			type: new GraphQLNonNull(GraphQLString),
-		},
-		material_type_id: {
-			type: new GraphQLNonNull(GraphQLString),
-		},
-		unit_price: {
-			type: new GraphQLNonNull(GraphQLInt),
-		},
-		qtd: {
-			type: new GraphQLNonNull(GraphQLInt),
-		},
+		price: { type: new GraphQLNonNull(GraphQLInt), },
+		at: { type: new GraphQLNonNull(GraphQLString), },
+	}),
+});
+
+const PartOptionsInputType = new GraphQLInputObjectType({
+	name: 'PartOptionsInputType',
+	fields: () => ({
+		part_id: { type: new GraphQLNonNull(GraphQLString), },
+		material_type_id: { type: new GraphQLNonNull(GraphQLString), },
+		heat_treatment_id: { type: GraphQLString, },
+		superficial_treatment_id: { type: GraphQLString, },
+		tolerance: { type: GraphQLFloat, },
+		finishing: { type: FinishingEnumType, },
+		inspection_id: { type: GraphQLString, },
+		screw_amount: { type: GraphQLInt, },
+		amount: { type: new GraphQLNonNull(GraphQLInt), },
+	}),
+});
+
+const PartBatchInfoInputType = new GraphQLInputObjectType({
+	name: 'PartBatchInfoInputType',
+	fields: () => ({
+		parts: { type: new GraphQLNonNull(new GraphQLList(PartOptionsInputType)), },
+		delivery: { type: new GraphQLNonNull(DeliveryEnumType), },
+	}),
+});
+
+const PartInfoType = new GraphQLObjectType({
+	name: 'PartInfoType',
+	fields: () => ({
+		id: { type: new GraphQLNonNull(GraphQLString), },
+		name: { type: new GraphQLNonNull(GraphQLString), },
+		material_type_id: { type: new GraphQLNonNull(GraphQLString), },
+		heat_treatment_id: { type: GraphQLString, },
+		superficial_treatment_id: { type: GraphQLString, },
+		tolerance: { type: GraphQLFloat, },
+		finishing: { type: FinishingEnumType, },
+		inspection_id: { type: GraphQLString, },
+		screw_amount: { type: GraphQLInt, },
+		amount: { type: new GraphQLNonNull(GraphQLInt), },
+		unit_price: { type: new GraphQLNonNull(GraphQLInt), },
+	}),
+});
+
+const PartBatchInfoType = new GraphQLObjectType({
+	name: 'PartBatchInfoType',
+	fields: () => ({
+		subtotal: { type: new GraphQLNonNull(GraphQLInt), },
+		delivery: { type: new GraphQLNonNull(BatchDeliveryType), },
 	}),
 });
 
 module.exports = {
-	FrontPartType,
+	PartOptionsInputType,
+	PartBatchInfoInputType,
+	PartInfoType,
+	PartBatchInfoType,
 };

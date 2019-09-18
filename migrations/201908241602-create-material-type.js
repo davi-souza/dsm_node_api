@@ -25,6 +25,14 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
+			hardness: {
+				type: Sequelize.ENUM(
+					'LOW',
+					'MEDIUM',
+					'HIGH',
+				),
+				allowNull: false,
+			},
 			created_at: {
 				type: Sequelize.DATE,
 				defaultValue: Sequelize.NOW,
@@ -32,6 +40,8 @@ module.exports = {
 			},
 			updated_at: {
 				type: Sequelize.DATE,
+				defaultValue: Sequelize.NOW,
+				allowNull: false,
 			},
 			deleted_at: {
 				type: Sequelize.DATE,

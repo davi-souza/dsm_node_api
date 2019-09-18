@@ -19,6 +19,14 @@ class MaterialType extends Model {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
+			hardness: {
+				type: Sequelize.ENUM(
+					'LOW',
+					'MEDIUM',
+					'HIGH',
+				),
+				allowNull: false,
+			},
 		}, {
 				tableName: 'material_type',
 				freezeTableName: true,
@@ -38,6 +46,18 @@ class MaterialType extends Model {
 		this.hasMany(models.OrderPart, {
 			foreignKey: 'material_type_id',
 			as: 'orders',
+		});
+
+		this.belongsToMany(models.HeatTreatment, {
+			through: 'material_type_heat_treatment',
+			foreignKey: 'material_type_id',
+			as: 'heat_treatments',
+		});
+
+		this.belongsToMany(models.SuperficialTreatment, {
+			through: 'material_type_superficial_treatment',
+			foreignKey: 'material_type_id',
+			as: 'superficial_treatments',
 		});
 	}
 }

@@ -2,18 +2,32 @@ const {
 	GraphQLNonNull,
 	GraphQLString,
 	GraphQLInt,
+	GraphQLList,
 } = require('graphql');
-const { FrontPartType } = require('../types/part');
-const { ChangePartOptionsResolver } = require('../resolvers/part');
+const {
+	PartOptionsInputType,
+	PartBatchInfoInputType,
+	PartInfoType,
+	PartBatchInfoType,
+} = require('../types/part');
+const {
+	PartOptionsResolver,
+	PartBatchInfoResolver,
+} = require('../resolvers/part');
 
 module.exports = {
 	ChangePartOptionsMutation : {
-		type: new GraphQLNonNull(FrontPartType),
+		type: new GraphQLNonNull(PartInfoType),
 		args: {
-			part_id: { type: new GraphQLNonNull(GraphQLString), },
-			material_type_id: { type: new GraphQLNonNull(GraphQLString), },
-			qtd: { type: new GraphQLNonNull(GraphQLInt), },
+			input: { type: new GraphQLNonNull(PartOptionsInputType,), },
 		},
-		resolve: ChangePartOptionsResolver,
+		resolve: PartOptionsResolver,
+	},
+	PartBatchInfoMutation: {
+		type: new GraphQLNonNull(PartBatchInfoType),
+		args: {
+			input: { type: new GraphQLNonNull(PartBatchInfoInputType), },
+		},
+		resolve: PartBatchInfoResolver,
 	},
 };
