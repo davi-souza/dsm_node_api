@@ -54,12 +54,13 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			materials_promise,
 		]);
 
-		const unit_price = part_price_calc({
-			id: new_part.id,
-			name: new_part.name,
+		const {total} = part_price_calc({
+			part: new_part,
 			material_type: materials[0].material_types[0],
 			heat_treatment: null,
 			superficial_treatment: null,
+			tolerance: null,
+			finishing: null,
 			screw_amount: 0,
 			amount: 1,
 		});
@@ -78,7 +79,7 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 					finishing: null,
 					screw_amount: 0,
 					amount: 1,
-					unit_price,
+					unit_price: total,
 				},
 			})
 			.end();

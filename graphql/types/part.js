@@ -45,14 +45,22 @@ const PartBatchInfoInputType = new GraphQLInputObjectType({
 	}),
 });
 
+const ClientMaterialAndTreatmentsType = new GraphQLObjectType({
+	name: 'ClientMaterialAndTreatmentsType',
+	fields: () => ({
+		id: { type: new GraphQLNonNull(GraphQLString), },
+		name: { type: new GraphQLNonNull(GraphQLString), },
+	}),
+});
+
 const PartInfoType = new GraphQLObjectType({
 	name: 'PartInfoType',
 	fields: () => ({
 		id: { type: new GraphQLNonNull(GraphQLString), },
 		name: { type: new GraphQLNonNull(GraphQLString), },
-		material_type_id: { type: new GraphQLNonNull(GraphQLString), },
-		heat_treatment_id: { type: GraphQLString, },
-		superficial_treatment_id: { type: GraphQLString, },
+		material_type: { type: new GraphQLNonNull(ClientMaterialAndTreatmentsType), },
+		heat_treatment: { type: ClientMaterialAndTreatmentsType, },
+		superficial_treatment: { type: ClientMaterialAndTreatmentsType, },
 		tolerance: { type: GraphQLFloat, },
 		finishing: { type: FinishingEnumType, },
 		inspection_id: { type: GraphQLString, },

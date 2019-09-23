@@ -1,6 +1,22 @@
 const uuid_v4 = require('uuid/v4');
 const db = require('../../models');
 const { CustomError } = require('../../libs/error');
+const { new_order_email } = require('../../services/email');
+
+function process_order(order) {
+	return {
+		...order.dataValues,
+		address: order.address.dataValues,
+		user: order.address.dataValues.user.dataValues,
+		parts: order.parts.map(op => ({
+			...op.dataValues,
+			part: op.part.dataValues,
+			material_type: op.material_type.dataValues,
+			heat_treatment: op.heat_treatment ? op.heat_treatment.dataValues : null,
+			superficial_treatment: op.superficial_treatment ? op.superficial_treatment.dataValues : null,
+		}))
+	};
+}
 
 function supplier_payment_calc(prices) {
 	return Object.entries(prices).reduce((sum, [key, value]) => {
@@ -67,38 +83,86 @@ function process_item(item) {
  *            {object} address					User Address model
  */
 function place_order(items, prices, delivery, user_info) {
-	return db.sequelize.transaction(transaction => {
-		const create_order_promise = db.Order.create({
-			id: uuid_v4(),
-			status: 'PENDING',
-			user_address_id: user_info.address.id,
-			supplier_payment: supplier_payment_calc(prices),
-			mech4u_payment: prices.mech4u,
-			delivery_cost: delivery.price,
-			delivery_at: delivery.at,
-			tax_payment: 0,
-			orderParts: items.map(process_item),
-		}, {
-			transaction,
-			include: [{
-				model: db.OrderPart,
-				as: 'orderParts',
-			}],
-		});
-
-		const part_user_promises = items.map(item => {
+	return db.sequelize
+		.transaction(transaction => {
 			return db.Part.update({
 				user_id: user_info.user.id,
 			}, {
 				where: {
-					id: item.part.id,
+					id: {
+						[db.Sequelize.Op.in]: Array.from(new Set(items.map(item => item.part.id))),
+					},
 				},
 				transaction,
+			}).then((_) => {
+				return db.Order.create({
+					id: uuid_v4(),
+					status: 'PENDING',
+					user_address_id: user_info.address.id,
+					supplier_payment: supplier_payment_calc(prices),
+					mech4u_payment: prices.mech4u,
+					delivery_cost: delivery.price,
+					delivery_at: delivery.at,
+					tax_payment: 0,
+					parts: items.map(process_item),
+				}, {
+					transaction,
+					include: [{
+						model: db.OrderPart,
+						as: 'parts',
+					}],
+				});
 			});
-		});
-
-		return Promise.all([create_order_promise, ...part_user_promises]);
-	}).catch(console.warn);
+		})
+		.then(created_order => {
+			 Promise.all([
+				db.Order.findOne({
+					include: [
+						{
+							model: db.UserAddress,
+							as: 'address',
+							include: [{
+								model: db.User,
+								as: 'user',
+							}],
+						},
+						{
+							model: db.OrderPart,
+							as: 'parts',
+							include: [
+								{
+									model: db.Part,
+									as: 'part',
+								},
+								{
+									model: db.MaterialType,
+									as: 'material_type',
+								},
+								{
+									model: db.HeatTreatment,
+									as: 'heat_treatment',
+								},
+								{
+									model: db.SuperficialTreatment,
+									as: 'superficial_treatment',
+								},
+							],
+						},
+					],
+					where: {
+						id: created_order.dataValues.id,
+					},
+				}),
+				db.Supplier.findAll({
+					attributes: ['name', 'email'],
+					raw: true,
+				})
+			 ]).then(([raw_order, suppliers]) => {
+				 const order = process_order(raw_order);
+				 return new_order_email(order.user, suppliers, order);
+			 });
+		})
+		.catch(console.warn);
 }
 
 module.exports = {

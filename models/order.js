@@ -56,7 +56,7 @@ class Order extends Model {
 
 		this.hasMany(models.OrderPart, {
 			foreignKey: 'order_id',
-			as: 'orderParts',
+			as: 'parts',
 		});
 
 		this.belongsTo(models.UserAddress, {

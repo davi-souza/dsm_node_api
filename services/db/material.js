@@ -62,6 +62,7 @@ async function get_materials() {
 						'name',
 						'price_per_kg',
 						'specific_weight',
+						'hardness',
 					],
 					include: [
 						{

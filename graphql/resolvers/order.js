@@ -19,10 +19,10 @@ function get_user(authorization) {
 	//	throw new CustomError('Usuário não autorizado', 401);
 	//}
 	return {
-		id: 'e50ca7bb-f13b-4fa7-9473-0f32f48adc98',
+		id: '430e5b7e-18fa-4577-bb1c-2fbb2421b810',
 		addresses: [
 			{
-				id: '3d2e4731-2423-47c5-8008-05798e647463',
+				id: '8dc1f71d-89a1-4e84-80ae-12635c62f97d',
 			},
 		],
 	};
