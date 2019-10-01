@@ -8,7 +8,7 @@
 function machining_speed(material_type, amount) {
 	const speed_db = {
 		'LOW': {
-			base_speed: 2000,
+			base_speed: 2200,
 			step: 200,
 		},
 		'MEDIUM': {
