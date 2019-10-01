@@ -13,11 +13,11 @@ function machining_speed(material_type, amount) {
 		},
 		'MEDIUM': {
 			base_speed: 1600,
-			step: 160,
+			step: 200,
 		},
 		'HIGH': {
 			base_speed: 1000,
-			step: 100,
+			step: 200,
 		},
 	};
 
@@ -33,9 +33,13 @@ function machining_speed(material_type, amount) {
 		return base_speed + 3 * step;
 	} else if (amount < 101) {
 		return base_speed + 4 * step;
+	} else if (amount < 500) {
+		return base_speed + 5 * step;
+	} else if (amount < 1000) {
+		return base_speed + 6 * step;
 	}
 
-	return base_speed + 5 * step;
+	return base_speed + 7 * step;
 }
 
 /**
