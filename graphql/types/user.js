@@ -18,7 +18,7 @@ const LoginInputType = new GraphQLInputObjectType({
 const RefreshTokenInputType = new GraphQLInputObjectType({
 	name: 'RefreshTokenInputType',
 	fields: () => ({
-		token: { type: new GraphQLNonNull(GraphQLString), },
+		jwt: { type: new GraphQLNonNull(GraphQLString), },
 	}),
 });
 
@@ -63,7 +63,7 @@ const UserLogin = new GraphQLObjectType({
 	fields: () => ({
 		name: { type: new GraphQLNonNull(GraphQLString), },
 		email: { type: new GraphQLNonNull(GraphQLString), },
-		token: { type: new GraphQLNonNull(GraphQLString), },
+		jwt: { type: new GraphQLNonNull(GraphQLString), },
 		addresses: { type: new GraphQLList(AddressType), },
 	}),
 });

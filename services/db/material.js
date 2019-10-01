@@ -43,7 +43,7 @@ function process_material(material) {
  *  @return {object[]}	Materials and their types
  */
 async function get_materials() {
-	if (!!cache.material && scache.materials.length > 0) {
+	if (!!cache.materials && cache.materials.length > 0) {
 		return Promise.resolve(cache.materials);
 	}
 

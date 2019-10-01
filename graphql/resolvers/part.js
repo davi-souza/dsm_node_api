@@ -79,6 +79,7 @@ async function PartBatchInfoResolver(_, {input}) {
 		const {items, prices} = await get_batch_info(parts);
 
 		const delivery_info = await get_mail_info(items, delivery);
+		delivery_info.at = delivery_info.at.toISOString();
 
 		return {
 			subtotal: prices.total,

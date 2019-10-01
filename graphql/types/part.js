@@ -1,4 +1,5 @@
 const {
+	GraphQLDate,
 	GraphQLEnumType,
 	GraphQLFloat,
 	GraphQLInputObjectType,

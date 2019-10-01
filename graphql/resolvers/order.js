@@ -57,6 +57,7 @@ async function PlaceOrderResolver(_, {input}, {headers}) {
 		const {items, prices} = await get_batch_info(parts);
 
 		const delivery_info = await get_mail_info(items, delivery);
+		delivery_info.at = delivery_info.at.toISOString();
 
 		await place_order(items, prices, delivery_info, {user, address});
 

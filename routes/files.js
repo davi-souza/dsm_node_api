@@ -63,7 +63,12 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			finishing: null,
 			screw_amount: 0,
 			amount: 1,
-		});
+		}),
+			material_type = {
+				id: materials[0].material_types[0].id,
+				name: materials[0].material_types[0].name,
+			};
+
 
 		res
 			.status(201)
@@ -72,9 +77,9 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 				part: {
 					id: new_part.id,
 					name: new_part.name,
-					material_type_id: materials[0].material_types[0].id,
-					heat_treatment_id: null,
-					superficial_treatment_id: null,
+					material_type,
+					heat_treatment: null,
+					superficial_treatment: null,
 					tolerance: null,
 					finishing: null,
 					screw_amount: 0,

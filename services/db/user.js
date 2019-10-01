@@ -66,7 +66,7 @@ async function login(email, password) {
 
 		return {
 			...user_payload,
-			token: jwt_sign(jwt_payload),
+			jwt: jwt_sign(jwt_payload),
 		};
 	} catch (err) {
 		console.warn(err);
@@ -131,7 +131,7 @@ async function register_user(name, phone_number, email, password, addresses) {
 
 		return {
 			...user_payload,
-			token: jwt_sign(jwt_payload),
+			jwt: jwt_sign(jwt_payload),
 		};
 	} catch (err) {
 		console.warn(err);

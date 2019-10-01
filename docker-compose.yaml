@@ -6,6 +6,10 @@ services:
         container_name: platform_api
         working_dir: /mech4u/platform_api/
         command: yarn start:dev
+        env_file:
+            - ./.env
+        environment:
+            NODE_ENV: production
         volumes:
             - ./:/mech4u/platform_api/:consistent
         ports:
