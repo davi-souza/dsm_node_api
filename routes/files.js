@@ -18,11 +18,11 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 
 		const { originalname, buffer } = req.file;
 
-		const extension = originalname.split('.').pop(); 
+		//const extension = originalname.split('.').pop(); 
 
-		if (!['stp', 'step'].includes(extension)) {
-			throw new CustomError('O arquivo deve ter extensão ".step"', 400);
-		}
+		//if (!['stp', 'step'].includes(extension)) {
+		//	throw new CustomError('O arquivo deve ter extensão ".step"', 400);
+		//}
 
 		const part_volumes_promise = get_part_volume(originalname, buffer);
 
