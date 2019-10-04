@@ -10,7 +10,58 @@ const {
 } = require('./treatment');
 const { tolerance_rate } = require('./tolerance');
 const { finishing_rate } = require('./finishing');
-const { screws_rate } = require('./screw');
+const { screw_price } = require('./screw');
+const { engraving_price } = require('./engraving');
+const { report_price } = require('./report');
+
+/**
+ * In order to get closer to the real price for the "volume diff" part,
+ * it's necessary to lower the price as a function of the volume
+ * @param {number} raw_price				Price before the decrease multiplied by 100 (int)
+ * @param {object} part						Part model (there are keys missing)
+ *            {number} volume				Part's volume multiplied by 100 in mm3 (int)
+ * @param {number} amount					How many parts to be manufactured
+ * @return {number}							New price multiplied by 100 (int)
+ */
+function lower_price_by_volume(raw_price, part, amount) {
+	const decrease_step_db = {
+		'SMALL': 5,
+		'MEDIUM': 2,
+		'BIG': 0,
+	};
+
+	function part_size_category() {
+		if (part.volume < 1000000) {
+			return 'SMALL';
+		}
+
+		if (part.volume < 5000000) {
+			return 'MEDIUM';
+		}
+
+		return 'BIG';
+	}
+
+	const step = decrease_step_db[part_size_category()];
+
+	if (amount < 11 || step === 0) {
+		return raw_price;
+	}
+
+	let final_price = raw_price;
+
+	if (amount >= 11 && amount < 101) {
+		final_price = final_price * (1 - (1 * step / 100));
+	} else if (amount >= 101 && amount < 501) {
+		final_price = final_price * (1 - (2 * step / 100));
+	} else if (amount >= 501 && amount < 1001) {
+		final_price = final_price * (1 - (3 * step / 100));
+	} else if (amount >= 1001) {
+		final_price = final_price * (1 - (4 * step / 100));
+	}
+
+	return Math.ceil(final_price);
+}
 
 /** 
  * Calculates the price of the part
@@ -27,6 +78,8 @@ const { screws_rate } = require('./screw');
  *                {number} specific_weight		Material type's density multiplied by 100 in g/cm3 (int)
  *            {number} tolerance				Part's tolerance. It's a value between (0.00, 0.15]. The default is 0.15
  *            {string} finishing				Part's finishing type. It is an ENUM
+ *            {string} engraving				Part's engraving. It is an ENUM
+ *            {string} report					Part's report. It is an ENUM
  *            {object} heat_treatment			Chosen heat treatment (it can be null)
  *                {string} id					Heat treatment's id
  *                {string} name					Heat treatment's name
@@ -37,7 +90,9 @@ const { screws_rate } = require('./screw');
  *                {string} name					Superficial treatment's name
  *                {number} minimum_price		Superficial treatment's minimum price
  *                {number} price_per_kg			Superficial treatment's price per kg multiplied by 100 (int)
- *            {number} screw_amount				How many screws the part has (int)
+ *            {object} screw					Screw config. It can be null
+ *                {string} type					Screw type enum
+ *                {number} amount				How many screws
  *            {number} amount					How many parts to be created (int)
  * @return {object}								Returned object with all prices
  *            {number} supplier					Supplier's profit
@@ -50,21 +105,12 @@ const { screws_rate } = require('./screw');
  *            {number} total					Total price of the part
  */
 function part_price_calc(item) {
-	const item_prices = {
-		supplier: 0,
-		mech4u: 0,
-		raw_material: 0,
-		volume_diff: 0,
-		heat_treatment: 0,
-		superficial_treatment: 0,
-		tolerance: 0,
-		finishing: 0,
-		screws: 0,
-	};
+	const item_prices = {};
 
 	item_prices.raw_material = raw_material_price(
 		item.part,
-		item.material_type
+		item.material_type,
+		item.amount
 	);
 	item_prices.volume_diff = volume_diff_price(
 		item.part,
@@ -72,22 +118,26 @@ function part_price_calc(item) {
 		item.amount
 	);
 
-	const pre_total = Object.values(item_prices).reduce((sum, current) => sum + current, 0);
-	item_prices.tolerance = Math.ceil(pre_total * tolerance_rate(item.tolerance));
-	item_prices.finishing = Math.ceil(pre_total * finishing_rate(item.finishing));
-	item_prices.screws = Math.ceil(pre_total * screws_rate(item.screw_amount));
+	const pre_raw_price = Object.values(item_prices).reduce((sum, current) => sum + current, 0),
+		raw_price = lower_price_by_volume(pre_raw_price, item.part, item.amount);
+
+	item_prices.tolerance = Math.ceil(raw_price * tolerance_rate(item.tolerance));
+	item_prices.finishing = Math.ceil(raw_price * finishing_rate(item.finishing));
+	item_prices.screws = screw_price(raw_price, item.screw);
+	item_prices.engraving = engraving_price(raw_price, item.engraving);
+	item_prices.report = report_price(raw_price, item.report);
 
 	item_prices.heat_treatment = heat_treatment_price(
 		item.part,
 		item.material_type,
 		item.heat_treatment,
-		true
+		item.amount
 	);
 	item_prices.superficial_treatment = superficial_treatment_price(
 		item.part,
 		item.material_type,
 		item.superficial_treatment,
-		true
+		item.amount
 	);
 
 	const sub_total = Object.values(item_prices).reduce((sum, current) => sum + current, 0);
@@ -184,17 +234,23 @@ function part_batch_price_calc(items) {
 		return current;
 	}, {});
 
-	processed_heat_treatments.forEach(ht => {
-		result.prices.heat_treatment += ht.minimum_price;
-	});
+	/**
+	 * As requested, the "initial values" are going to be
+	 * added part by part
+	 *
+	 * I'm leaving this commented in case we want to use it again
+	 */
+	//processed_heat_treatments.forEach(ht => {
+	//	result.prices.heat_treatment += ht.minimum_price;
+	//});
 
-	processed_superficial_treatments.forEach(st => {
-		result.prices.superficial_treatment += st.minimum_price;
-	});
+	//processed_superficial_treatments.forEach(st => {
+	//	result.prices.superficial_treatment += st.minimum_price;
+	//});
 
-	processed_material_types.forEach(mt => {
-		result.prices.raw_material += Math.ceil(0.3 * mt.price_per_kg);
-	});
+	//processed_material_types.forEach(mt => {
+	//	result.prices.raw_material += Math.ceil(0.3 * mt.price_per_kg);
+	//});
 
 	result.prices.total = 0;
 

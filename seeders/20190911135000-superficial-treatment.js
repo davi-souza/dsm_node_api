@@ -41,14 +41,14 @@ module.exports = {
 				created_at: new Date(),
 				updated_at: new Date(),
 			},
-			{
-				id: '03ca130a-12f3-476b-af46-3df4ecd97c89',
-				name: 'Cromo',
-				minimum_price: 4500,
-				price_per_kg: 4500,
-				created_at: new Date(),
-				updated_at: new Date(),
-			},
+			//{
+			//	id: '03ca130a-12f3-476b-af46-3df4ecd97c89',
+			//	name: 'Cromo',
+			//	minimum_price: 4500,
+			//	price_per_kg: 4500,
+			//	created_at: new Date(),
+			//	updated_at: new Date(),
+			//},
 		];
 
 		return queryInterface.bulkInsert('superficial_treatment', superficial_treatments);

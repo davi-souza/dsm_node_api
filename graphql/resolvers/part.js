@@ -15,7 +15,10 @@ async function PartOptionsResolver(_, {input}) {
 			superficial_treatment_id,
 			tolerance,
 			finishing,
-			screw_amount,
+			screw,
+			engraving,
+			knurled,
+			report,
 			amount,
 		} = input;
 
@@ -39,7 +42,10 @@ async function PartOptionsResolver(_, {input}) {
 			finishing,
 			heat_treatment,
 			superficial_treatment,
-			screw_amount,
+			screw,
+			engraving,
+			knurled,
+			report,
 			amount,
 		});
 
@@ -60,7 +66,7 @@ async function PartOptionsResolver(_, {input}) {
 			} : null,
 			tolerance,
 			finishing,
-			screw_amount,
+			screw,
 			amount,
 			unit_price: total,
 		};

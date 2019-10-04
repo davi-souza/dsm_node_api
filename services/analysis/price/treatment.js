@@ -9,10 +9,10 @@ const { part_weight } = require('../../../libs/part/weight');
  * @param {object} heat_treatment		Heat Treatment model (there are keys missing)
  *            {string} minimum_price	Heat Treatment's minimum_price multiplied by 100 (int)
  *            {string} price_per_kg		Heat Treatment's price per kg multiplied by 100 (int)
- * @param {boolean} ignore_minimum		If the heat treatment was already applied
+ * @param {number} amount				How many parts to manufactured
  * @return {number}						Heat treatment's price multiplied by 100 (int)
  */
-function heat_treatment_price(part, material_type, heat_treatment, ignore_minimum) {
+function heat_treatment_price(part, material_type, heat_treatment, amount) {
 	if (!heat_treatment) {
 		return 0;
 	}
@@ -22,7 +22,7 @@ function heat_treatment_price(part, material_type, heat_treatment, ignore_minimu
 	 */
 	const dynamic_price = heat_treatment.price_per_kg * part_weight(part, material_type) / 100;
 
-	const static_price = ignore_minimum ? 0 : heat_treatment.minimum_price;
+	const static_price = heat_treatment.minimum_price / amount;
 
 	return Math.ceil(dynamic_price + static_price);
 }
@@ -37,10 +37,10 @@ function heat_treatment_price(part, material_type, heat_treatment, ignore_minimu
  *            {string} minimum_price		Superficial Treatment's minimum_price multiplied by 100 (int)
  *            {string} price_per_kg			Superficial Treatment's price per kg multiplied by 100 (int)
  * @param {number} part_weight				Part's weight multiplied by 100 in kg (int)
- * @param {boolean} ignore_minimum			If the heat treatment was already applied
+ * @param {number} amount					How many parts to manufactured
  * @return {number}							Superficial treatment's price multiplied by 100 (int)
  */
-function superficial_treatment_price(part, material_type, superficial_treatment, ignore_minimum) {
+function superficial_treatment_price(part, material_type, superficial_treatment, amount) {
 	if (!superficial_treatment) {
 		return 0;
 	}
@@ -50,7 +50,7 @@ function superficial_treatment_price(part, material_type, superficial_treatment,
 	 */
 	const dynamic_price = superficial_treatment.price_per_kg * part_weight(part, material_type) / 100;
 
-	const static_price = ignore_minimum ? 0 : superficial_treatment.minimum_price;
+	const static_price = superficial_treatment.minimum_price / amount;
 
 	return Math.ceil(dynamic_price + static_price);
 }

@@ -1,5 +1,6 @@
 const {
 	GraphQLDate,
+	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLFloat,
 	GraphQLInputObjectType,
@@ -13,7 +14,14 @@ const {
 const {
 	FinishingEnumType,
 	DeliveryEnumType,
+	EngravingEnumType,
+	ReportEnumType,
 } = require('./enums');
+
+const {
+	ScrewInputType,
+	ScrewType,
+} = require('./screw');
 
 const BatchDeliveryType = new GraphQLObjectType({
 	name: 'BatchDeliveryType',
@@ -32,8 +40,10 @@ const PartOptionsInputType = new GraphQLInputObjectType({
 		superficial_treatment_id: { type: GraphQLString, },
 		tolerance: { type: GraphQLFloat, },
 		finishing: { type: FinishingEnumType, },
-		inspection_id: { type: GraphQLString, },
-		screw_amount: { type: GraphQLInt, },
+		engraving: { type: EngravingEnumType, },
+		knurled: { type: GraphQLBoolean, },
+		screw: { type: ScrewInputType, },
+		report: { type: ReportEnumType, },
 		amount: { type: new GraphQLNonNull(GraphQLInt), },
 	}),
 });
@@ -64,8 +74,10 @@ const PartInfoType = new GraphQLObjectType({
 		superficial_treatment: { type: ClientMaterialAndTreatmentsType, },
 		tolerance: { type: GraphQLFloat, },
 		finishing: { type: FinishingEnumType, },
-		inspection_id: { type: GraphQLString, },
-		screw_amount: { type: GraphQLInt, },
+		engraving: { type: EngravingEnumType, },
+		knurled: { type: GraphQLBoolean, },
+		screw: { type: ScrewType, },
+		report: { type: ReportEnumType, },
 		amount: { type: new GraphQLNonNull(GraphQLInt), },
 		unit_price: { type: new GraphQLNonNull(GraphQLInt), },
 	}),

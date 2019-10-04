@@ -20,7 +20,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -37,7 +37,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -54,7 +54,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 				],
@@ -98,7 +98,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -115,7 +115,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -132,7 +132,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -150,7 +150,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 				],
@@ -174,7 +174,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -191,7 +191,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 					{
@@ -208,7 +208,7 @@ module.exports = {
 							'93305296-6767-4f5c-9de9-c1b9a8c67542',
 							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
 							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
-							'03ca130a-12f3-476b-af46-3df4ecd97c89',
+							//'03ca130a-12f3-476b-af46-3df4ecd97c89',
 						],
 					},
 				],
@@ -218,18 +218,18 @@ module.exports = {
 				name: 'Aço inoxidável',
 				created_at: new Date(),
 				material_type: [
-					{
-						id: 'bb9e4717-0718-400b-80aa-e31f9868b02a',
-						name: 'Aço inoxidável AISI 303',
-						price_per_kg: 4000,
-						specific_weight: 800,
-						created_at: new Date(),
-						hardness: 'HIGH',
-						heat_treatments: [],
-						superficial_treatments: [
-							'ed6370b6-3e2c-458b-9462-e6eb4eea7240',
-						],
-					},
+					//{
+					//	id: 'bb9e4717-0718-400b-80aa-e31f9868b02a',
+					//	name: 'Aço inoxidável AISI 303',
+					//	price_per_kg: 4000,
+					//	specific_weight: 800,
+					//	created_at: new Date(),
+					//	hardness: 'HIGH',
+					//	heat_treatments: [],
+					//	superficial_treatments: [
+					//		'ed6370b6-3e2c-458b-9462-e6eb4eea7240',
+					//	],
+					//},
 					{
 						id: '2c5495ee-86a8-473e-83b6-b96f0e373393',
 						name: 'Aço inoxidável AISI 304',

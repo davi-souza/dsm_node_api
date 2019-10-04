@@ -1,17 +1,22 @@
 /**
- * Calculates how much the price increases the number os screws
- * @param {number} screw_amount	Part's number of screws
- * @return {number}				Rate
+ * Calculates the price with screws
+ * @param {number} raw_price	Price of the material and service multiplied by 100 (int)
+ * @param {object} screw		Chosen screw config. It can be null/undefined
+ * @return {number}				Price multiplied by 100 (int)
  */
-function screws_rate(screw_amount) {
-	if (screw_amount > 0) {
-		return 0.05;
+function screw_price(raw_price, screw) {
+	if (!screw || screw.amount === 0) {
+		return 0;
 	}
 
-	return 0;
+	if (screw.type === 'EXTERNAL') {
+		return Math.ceil(raw_price * 0.05);
+	}
+
+	return Math.ceil(raw_price * 0.05 + Math.ceil(screw.amount / 10));
 }
 
 module.exports = {
-	screws_rate,
+	screw_price,
 };
 
