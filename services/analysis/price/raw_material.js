@@ -28,7 +28,8 @@ function raw_material_price(part, material_type, amount) {
 	 * Also, we are dividing the initial weight by the number of parts because
 	 * we don't want to charge it for every part.
 	 */
-	const input_price = (initial_weight / amount) * (material_type.price_per_kg) / 100;
+	//const input_price = (initial_weight / amount) * (material_type.price_per_kg) / 100;
+	const input_price = 0;
 
 	/**
 	 * In order to increase profit, get the ceil
