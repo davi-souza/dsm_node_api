@@ -118,15 +118,6 @@ function part_price_calc(item) {
 		item.amount
 	);
 
-	const pre_raw_price = Object.values(item_prices).reduce((sum, current) => sum + current, 0),
-		raw_price = lower_price_by_volume(pre_raw_price, item.part, item.amount);
-
-	item_prices.tolerance = Math.ceil(raw_price * tolerance_rate(item.tolerance));
-	item_prices.finishing = Math.ceil(raw_price * finishing_rate(item.finishing));
-	item_prices.screws = screw_price(raw_price, item.screw);
-	item_prices.engraving = engraving_price(raw_price, item.engraving);
-	item_prices.report = report_price(raw_price, item.report);
-
 	item_prices.heat_treatment = heat_treatment_price(
 		item.part,
 		item.material_type,
@@ -139,6 +130,16 @@ function part_price_calc(item) {
 		item.superficial_treatment,
 		item.amount
 	);
+
+	const pre_raw_price = Object.values(item_prices).reduce((sum, current) => sum + current, 0),
+		raw_price = lower_price_by_volume(pre_raw_price, item.part, item.amount);
+
+	item_prices.tolerance = Math.ceil(raw_price * tolerance_rate(item.tolerance));
+	item_prices.finishing = Math.ceil(raw_price * finishing_rate(item.finishing));
+	item_prices.screws = screw_price(raw_price, item.screw);
+	item_prices.engraving = engraving_price(raw_price, item.engraving);
+	item_prices.report = report_price(raw_price, item.report);
+
 
 	const sub_total = Object.values(item_prices).reduce((sum, current) => sum + current, 0);
 	item_prices.supplier = Math.ceil(sub_total * supplier_profit_rate(item.amount));
