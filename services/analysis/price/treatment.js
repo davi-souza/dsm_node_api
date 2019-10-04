@@ -22,7 +22,8 @@ function heat_treatment_price(part, material_type, heat_treatment, amount) {
 	 */
 	const dynamic_price = heat_treatment.price_per_kg * part_weight(part, material_type) / 100;
 
-	const static_price = heat_treatment.minimum_price / amount;
+	//const static_price = heat_treatment.minimum_price / amount;
+	const static_price = 0;
 
 	return Math.ceil(dynamic_price + static_price);
 }
@@ -50,7 +51,8 @@ function superficial_treatment_price(part, material_type, superficial_treatment,
 	 */
 	const dynamic_price = superficial_treatment.price_per_kg * part_weight(part, material_type) / 100;
 
-	const static_price = superficial_treatment.minimum_price / amount;
+	//const static_price = superficial_treatment.minimum_price / amount;
+	const static_price = 0;
 
 	return Math.ceil(dynamic_price + static_price);
 }
