@@ -120,8 +120,6 @@ function part_price_calc(item) {
 
 	const pre_raw_price = Object.values(item_prices).reduce((sum, current) => sum + current, 0),
 		raw_price = lower_price_by_volume(pre_raw_price, item.part, item.amount);
-	console.log(item.part.volume);
-	console.log(pre_raw_price, raw_price);
 
 	item_prices.tolerance = Math.ceil(raw_price * tolerance_rate(item.tolerance));
 	item_prices.finishing = Math.ceil(raw_price * finishing_rate(item.finishing));
