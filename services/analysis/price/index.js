@@ -8,60 +8,11 @@ const {
 	heat_treatment_price,
 	superficial_treatment_price,
 } = require('./treatment');
-const { tolerance_rate } = require('./tolerance');
-const { finishing_rate } = require('./finishing');
+const { tolerance_price } = require('./tolerance');
+const { finishing_price } = require('./finishing');
 const { screw_price } = require('./screw');
-const { engraving_price } = require('./engraving');
+const { marking_price } = require('./marking');
 const { report_price } = require('./report');
-
-/**
- * In order to get closer to the real price for the "volume diff" part,
- * it's necessary to lower the price as a function of the volume
- * @param {number} raw_price				Price before the decrease multiplied by 100 (int)
- * @param {object} part						Part model (there are keys missing)
- *            {number} volume				Part's volume multiplied by 100 in mm3 (int)
- * @param {number} amount					How many parts to be manufactured
- * @return {number}							New price multiplied by 100 (int)
- */
-function lower_price_by_volume(raw_price, part, amount) {
-	const decrease_step_db = {
-		'SMALL': 10,
-		'MEDIUM': 2,
-		'BIG': 0,
-	};
-
-	function part_size_category() {
-		if (part.volume < 1000000) {
-			return 'SMALL';
-		}
-
-		if (part.volume < 5000000) {
-			return 'MEDIUM';
-		}
-
-		return 'BIG';
-	}
-
-	const step = decrease_step_db[part_size_category()];
-
-	if (amount < 11 || step === 0) {
-		return raw_price;
-	}
-
-	let final_price = raw_price;
-
-	if (amount >= 11 && amount < 101) {
-		final_price = final_price * (1 - (1 * step / 100));
-	} else if (amount >= 101 && amount < 501) {
-		final_price = final_price * (1 - (2 * step / 100));
-	} else if (amount >= 501 && amount < 1001) {
-		final_price = final_price * (1 - (3 * step / 100));
-	} else if (amount >= 1001) {
-		final_price = final_price * (1 - (4 * step / 100));
-	}
-
-	return Math.ceil(final_price);
-}
 
 /** 
  * Calculates the price of the part
@@ -78,7 +29,7 @@ function lower_price_by_volume(raw_price, part, amount) {
  *                {number} specific_weight		Material type's density multiplied by 100 in g/cm3 (int)
  *            {number} tolerance				Part's tolerance. It's a value between (0.00, 0.15]. The default is 0.15
  *            {string} finishing				Part's finishing type. It is an ENUM
- *            {string} engraving				Part's engraving. It is an ENUM
+ *            {string} marking				Part's marking. It is an ENUM
  *            {string} report					Part's report. It is an ENUM
  *            {object} heat_treatment			Chosen heat treatment (it can be null)
  *                {string} id					Heat treatment's id
@@ -134,12 +85,11 @@ function part_price_calc(item) {
 		item.amount
 	);
 
-	item_prices.tolerance = Math.ceil(raw_price * tolerance_rate(item.tolerance));
-	item_prices.finishing = Math.ceil(raw_price * finishing_rate(item.finishing));
+	item_prices.tolerance = tolerance_price(raw_price, item.tolerance);
+	item_prices.finishing = finishing_price(raw_price, item.finishing);
 	item_prices.screws = screw_price(raw_price, item.screw);
-	item_prices.engraving = engraving_price(raw_price, item.engraving);
+	item_prices.marking = marking_price(raw_price, item.marking);
 	item_prices.report = report_price(raw_price, item.report);
-
 
 	const sub_total = Object.values(item_prices).reduce((sum, current) => sum + current, 0);
 	item_prices.supplier = Math.ceil(sub_total * supplier_profit_rate(item.amount));
@@ -258,6 +208,55 @@ function part_batch_price_calc(items) {
 	result.prices.total = Object.values(result.prices).reduce((sum, current) => sum + current, 0);
 
 	return result;
+}
+
+/**
+ * In order to get closer to the real price for the "volume diff" part,
+ * it's necessary to lower the price as a function of the volume
+ * @param {number} raw_price				Price before the decrease multiplied by 100 (int)
+ * @param {object} part						Part model (there are keys missing)
+ *            {number} volume				Part's volume multiplied by 100 in mm3 (int)
+ * @param {number} amount					How many parts to be manufactured
+ * @return {number}							New price multiplied by 100 (int)
+ */
+function lower_price_by_volume(raw_price, part, amount) {
+	const decrease_step_db = {
+		'SMALL': 10,
+		'MEDIUM': 2,
+		'BIG': 0,
+	};
+
+	function part_size_category() {
+		if (part.volume < 1000000) {
+			return 'SMALL';
+		}
+
+		if (part.volume < 5000000) {
+			return 'MEDIUM';
+		}
+
+		return 'BIG';
+	}
+
+	const step = decrease_step_db[part_size_category()];
+
+	if (amount < 11 || step === 0) {
+		return raw_price;
+	}
+
+	let final_price = raw_price;
+
+	if (amount >= 11 && amount < 101) {
+		final_price = final_price * (1 - (1 * step / 100));
+	} else if (amount >= 101 && amount < 501) {
+		final_price = final_price * (1 - (2 * step / 100));
+	} else if (amount >= 501 && amount < 1001) {
+		final_price = final_price * (1 - (3 * step / 100));
+	} else if (amount >= 1001) {
+		final_price = final_price * (1 - (4 * step / 100));
+	}
+
+	return Math.ceil(final_price);
 }
 
 module.exports = {

@@ -5,15 +5,15 @@
  * @return {number}				Price multiplied by 100 (int)
  */
 function screw_price(raw_price, screw) {
-	if (!screw || screw.amount === 0) {
+	if (!screw) {
 		return 0;
 	}
 
 	if (screw.type === 'EXTERNAL') {
-		return Math.ceil(raw_price * 0.05);
+		return Math.ceil(raw_price * 0.10);
 	}
 
-	return Math.ceil(raw_price * 0.05 + Math.ceil(screw.amount / 10));
+	return Math.ceil(raw_price * 0.02 * Math.ceil(screw.amount / 10));
 }
 
 module.exports = {

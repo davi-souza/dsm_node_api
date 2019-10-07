@@ -1,6 +1,6 @@
 const { Model } = require('sequelize');
 
-class Part extends Model {
+class AuxiliaryFile extends Model {
 	static init(sequelize, Sequelize) {
 		return super.init({
 			id: {
@@ -15,16 +15,8 @@ class Part extends Model {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			volume: {
-				type: Sequelize.BIGINT,
-				allowNull: false,
-			},
-			raw_material_volume: {
-				type: Sequelize.BIGINT,
-				allowNull: false,
-			},
 		}, {
-			tableName: 'part',
+			tableName: 'auxiliary_file',
 			freezeTableName: true,
 			underscored: true,
 			timestamps: true,
@@ -34,21 +26,11 @@ class Part extends Model {
 	}
 
 	static associate(models) {
-		this.belongsTo(models.User, {
-			foreignKey: 'user_id',
-			as: 'user',
-		});
-
-		this.hasMany(models.AuxiliaryFile, {
+		this.belongsTo(models.Part, {
 			foreignKey: 'part_id',
-			as: 'auxiliaryFiles',
-		});
-
-		this.hasMany(models.OrderPart, {
-			foreignKey: 'part_id',
-			as: 'orderParts',
+			as: 'part',
 		});
 	}
 }
 
-module.exports = Part;
+module.exports = AuxiliaryFile;

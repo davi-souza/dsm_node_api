@@ -11,10 +11,6 @@ class OrderPart extends Model {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
-			tolerance: {
-				type: Sequelize.INTEGER,
-				allowNull: true,
-			},
 			finishing: {
 				type: Sequelize.ENUM(
 					'STANDARD',
@@ -22,6 +18,56 @@ class OrderPart extends Model {
 					'POLISHED',
 				),
 				allowNull: true,
+			},
+			tolerance: {
+				type: Sequelize.ENUM(
+					'HIGH',
+					'MEDIUM',
+					'LOW',
+				),
+				allowNull: false,
+				defaultValue: 'HIGH',
+			},
+			screw_type: {
+				type: Sequelize.ENUM(
+					'EXTERNAL',
+					'INTERNAL',
+				),
+				allowNull: true,
+				defaultValue: null,
+			},
+			screw_amount: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				defaultValue: 0,
+			},
+			marking: {
+				type: Sequelize.ENUM(
+					'TYPED',
+					'ELETRIC_PNEUMATIC_PEN',
+					'LOW_RELIEF_MACHINING',
+					'LASER',
+					'ELECTROCHEMISTRY',
+				),
+				allowNull: true,
+				defaultValue: null,
+			},
+			knurled: {
+				type: Sequelize.BOOLEAN,
+				allowNull: false,
+				defaultValue: false,
+			},
+			report: {
+				type: Sequelize.ENUM(
+					'STANDARD',
+					'MEASUREMENT_3D',
+				),
+				allowNull: false,
+				defaultValue: 'STANDARD',
+			},
+			amount: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
 			},
 			raw_material_price: {
 				type: Sequelize.BIGINT,
@@ -39,17 +85,30 @@ class OrderPart extends Model {
 				type: Sequelize.BIGINT,
 				allowNull: true,
 			},
-			tolerance_price: {
-				type: Sequelize.BIGINT,
-				allowNull: true,
-			},
 			finishing_price: {
 				type: Sequelize.BIGINT,
-				allowNull: true,
+				allowNull: false,
+				defaultValue: 0,
+			},
+			tolerance_price: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
+				defaultValue: 0,
 			},
 			screw_price: {
 				type: Sequelize.BIGINT,
-				allowNull: true,
+				allowNull: false,
+				defaultValue: 0,
+			},
+			marking_price: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
+				defaultValue: 0,
+			},
+			report_price: {
+				type: Sequelize.BIGINT,
+				allowNull: false,
+				defaultValue: 0,
 			},
 			supplier_profit: {
 				type: Sequelize.BIGINT,

@@ -58,7 +58,7 @@ function volume_diff_price(part, material_type, amount) {
 	 * price_per_hour: How much it cost to use the machine per hour
 	 *                 in real*100/hour (to be an int)
 	 */
-	const price_per_hour = 12000;
+	const price_per_hour = 10000;
 
 	/**
 	 * Volume delta in mm3

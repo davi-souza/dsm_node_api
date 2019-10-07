@@ -14,7 +14,8 @@ const {
 const {
 	FinishingEnumType,
 	DeliveryEnumType,
-	EngravingEnumType,
+	ToleranceEnumType,
+	MarkingEnumType,
 	ReportEnumType,
 } = require('./enums');
 
@@ -38,9 +39,9 @@ const PartOptionsInputType = new GraphQLInputObjectType({
 		material_type_id: { type: new GraphQLNonNull(GraphQLString), },
 		heat_treatment_id: { type: GraphQLString, },
 		superficial_treatment_id: { type: GraphQLString, },
-		tolerance: { type: GraphQLFloat, },
+		tolerance: { type: ToleranceEnumType, },
 		finishing: { type: FinishingEnumType, },
-		engraving: { type: EngravingEnumType, },
+		marking: { type: MarkingEnumType, },
 		knurled: { type: GraphQLBoolean, },
 		screw: { type: ScrewInputType, },
 		report: { type: ReportEnumType, },
@@ -72,9 +73,9 @@ const PartInfoType = new GraphQLObjectType({
 		material_type: { type: new GraphQLNonNull(ClientMaterialAndTreatmentsType), },
 		heat_treatment: { type: ClientMaterialAndTreatmentsType, },
 		superficial_treatment: { type: ClientMaterialAndTreatmentsType, },
-		tolerance: { type: GraphQLFloat, },
+		tolerance: { type: ToleranceEnumType, },
 		finishing: { type: FinishingEnumType, },
-		engraving: { type: EngravingEnumType, },
+		marking: { type: MarkingEnumType, },
 		knurled: { type: GraphQLBoolean, },
 		screw: { type: ScrewType, },
 		report: { type: ReportEnumType, },

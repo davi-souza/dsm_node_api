@@ -17,7 +17,7 @@ const { CustomError } = require('../../libs/error');
  *   https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property
  */
 function upload_file({filename, buffer}) {
-	return Promise.resolve({key:'this-is-us'});
+	return Promise.resolve({key: `files/${uuid_v4()}_${filename}`});
 
 	//return new Promise((resolve, reject) => {
 	//	let prefix = uuid_v4();

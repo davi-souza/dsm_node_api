@@ -333,18 +333,18 @@ module.exports = {
 							'22b26118-c992-4d14-94e5-4ff1a942637d',
 						],
 					},
-					{
-						id: '812b20bd-1980-4b01-b973-1e27cc75e478',
-						name: 'Alumínio Fundido SAE 323 T6',
-						price_per_kg: 6000,
-						specific_weight: 270,
-						created_at: new Date(),
-						hardness: 'LOW',
-						heat_treatments: [],
-						superficial_treatments: [
-							'22b26118-c992-4d14-94e5-4ff1a942637d',
-						],
-					},
+					//{
+					//	id: '812b20bd-1980-4b01-b973-1e27cc75e478',
+					//	name: 'Alumínio Fundido SAE 323 T6',
+					//	price_per_kg: 6000,
+					//	specific_weight: 270,
+					//	created_at: new Date(),
+					//	hardness: 'LOW',
+					//	heat_treatments: [],
+					//	superficial_treatments: [
+					//		'22b26118-c992-4d14-94e5-4ff1a942637d',
+					//	],
+					//},
 				],
 			},
 			{

@@ -6,6 +6,9 @@ const FinishingEnumType = new GraphQLEnumType({
 		'STANDARD': {
 			value: 'STANDARD',
 		},
+		'PRECISION': {
+			value: 'PRECISION',
+		},
 		'RECTIFIED': {
 			value: 'RECTIFIED',
 		},
@@ -27,6 +30,24 @@ const DeliveryEnumType = new GraphQLEnumType({
 	},
 });
 
+const ToleranceEnumType = new GraphQLEnumType({
+	name: 'ToleranceEnumType',
+	values: {
+		'HIGH': {
+			value: 'HIGH',
+		},
+		'MEDIUM': {
+			value: 'MEDIUM',
+		},
+		'LOW': {
+			value: 'LOW',
+		},
+		'VERY_LOW': {
+			value: 'VERY_LOW',
+		},
+	},
+});
+
 const ScrewEnumType = new GraphQLEnumType({
 	name: 'ScrewEnumType',
 	values: {
@@ -39,8 +60,8 @@ const ScrewEnumType = new GraphQLEnumType({
 	},
 });
 
-const EngravingEnumType = new GraphQLEnumType({
-	name: 'EngravingEnumType',
+const MarkingEnumType = new GraphQLEnumType({
+	name: 'MarkingEnumType',
 	values: {
 		'TYPED': {
 			value: 'TYPED',
@@ -75,7 +96,8 @@ const ReportEnumType = new GraphQLEnumType({
 module.exports = {
 	FinishingEnumType,
 	DeliveryEnumType,
-	EngravingEnumType,
+	ToleranceEnumType,
+	MarkingEnumType,
 	ScrewEnumType,
 	ReportEnumType,
 };

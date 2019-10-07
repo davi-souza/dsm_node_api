@@ -83,9 +83,36 @@ async function get_part(id) {
 	}
 }
 
+/**
+ * Create a auxiliary file at db
+ * @param {number} part_di				Part's id
+ * @param {string} storage				Storage key (path)
+ * @param {string} name					File's name
+ * @return {object} 					Return the created aux file
+ */
+async function create_auxiliary_file(part_id, name, storage) {
+	try {
+		const aux_file = await db.AuxiliaryFile.create({
+			id: uuid_v4(),
+			part_id,
+			name,
+			storage,
+		});
+
+		return {
+			...aux_file.dataValues,
+		};
+	} catch (err) {
+		console.warn(err);
+
+		throw new CustomError('Não foi possível criar arquivo auxiliar', 500);
+	}
+}
+
 module.exports = {
 	create_part,
 	get_parts,
 	get_parts_by_ids,
 	get_part,
+	create_auxiliary_file,
 };

@@ -5,7 +5,10 @@ const { CustomError, process_error } = require('../libs/error');
 const { upload_file } = require('../services/storage/upload');
 const { get_part_volume } = require('../services/analysis/volume');
 const {	part_price_calc } = require('../services/analysis/price');
-const { create_part } = require('../services/db/part');
+const {
+	create_part,
+	create_auxiliary_file,
+} = require('../services/db/part');
 const { get_materials } = require('../services/db/material');
 
 const upload = multer();
@@ -18,11 +21,11 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 
 		const { originalname, buffer } = req.file;
 
-		//const extension = originalname.split('.').pop(); 
+		const extension = originalname.split('.').pop(); 
 
-		//if (!['stp', 'step'].includes(extension)) {
-		//	throw new CustomError('O arquivo deve ter extensão ".step"', 400);
-		//}
+		if (!['stp', 'step'].includes(extension)) {
+			throw new CustomError('O arquivo deve ter extensão ".step"', 400);
+		}
 
 		const part_volumes_promise = get_part_volume(originalname, buffer);
 
@@ -76,8 +79,7 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 		res
 			.status(201)
 			.json({
-				message: 'Upload com sucesso',
-				part: {
+				data: {
 					id: new_part.id,
 					name: new_part.name,
 					material_type,
@@ -86,12 +88,13 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 					tolerance: null,
 					finishing: null,
 					screw: null,
-					engraving: null,
+					marking: null,
 					knurled: null,
 					report: null,
 					amount: 1,
 					unit_price: total,
 				},
+				errors: null,
 			})
 			.end();
 
@@ -100,7 +103,61 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 
 		res
 			.status(error.status)
-			.json(error)
+			.json({
+				data: null,
+				errors: [error],
+			})
+			.end();
+
+		return;
+	}
+});
+
+router.post('/upload/auxiliary', upload.single('file'), async function(req, res, next) {
+	try {
+		const {part_id} = req.query;
+
+		if (!part_id) {
+			throw new CustomError('Por favor informar peça', 400);
+		}
+
+		if (!req.file) {
+			throw new CustomError('Por favor inserir um arquivo', 400);
+		}
+
+		const {originalname, buffer} = req.file;
+
+		const {key} = await upload_file({
+			filename: originalname,
+			buffer,
+		});
+
+		const new_auxiliary_file = await create_auxiliary_file(
+			part_id,
+			originalname,
+			key,
+		);
+
+		res
+			.status(201)
+			.json({
+				data: {
+					name: originalname,
+					key,
+				},
+				errors: null,
+			})
+			.end();
+
+	} catch (err) {
+		const error = process_error(err);
+
+		res
+			.status(error.status)
+			.json({
+				data: null,
+				errors: [error],
+			})
 			.end();
 
 		return;
