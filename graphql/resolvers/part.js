@@ -67,6 +67,9 @@ async function PartOptionsResolver(_, {input}) {
 			tolerance,
 			finishing,
 			screw,
+			marking,
+			knurled,
+			report,
 			amount,
 			unit_price: total,
 		};
