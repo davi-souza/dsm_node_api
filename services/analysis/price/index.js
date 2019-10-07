@@ -56,6 +56,7 @@ const { report_price } = require('./report');
  *            {number} total					Total price of the part
  */
 function part_price_calc(item) {
+	console.log(item.part.raw_material_volume, item.part.volume);
 	const item_prices = {};
 
 	item_prices.raw_material = raw_material_price(
@@ -95,6 +96,7 @@ function part_price_calc(item) {
 	item_prices.supplier = Math.ceil(sub_total * supplier_profit_rate(item.amount));
 	item_prices.mech4u = Math.ceil(sub_total * mech4u_profit_rate(item.amount));
 
+	console.log(item_prices);
 	return {
 		...item_prices,
 		total: Math.ceil(Object.values(item_prices).reduce((sum, current) => sum + current, 0)),
