@@ -221,7 +221,7 @@ function part_batch_price_calc(items) {
  */
 function lower_price_by_volume(raw_price, part, amount) {
 	const decrease_step_db = {
-		'SMALL': 10,
+		'SMALL': 4,
 		'MEDIUM': 2,
 		'BIG': 0,
 	};
@@ -246,14 +246,20 @@ function lower_price_by_volume(raw_price, part, amount) {
 
 	let final_price = raw_price;
 
-	if (amount >= 11 && amount < 101) {
+	if (amount >= 11 && amount <= 50) {
 		final_price = final_price * (1 - (1 * step / 100));
-	} else if (amount >= 101 && amount < 501) {
+	} else if (amount >= 51 && amount <= 100) {
 		final_price = final_price * (1 - (2 * step / 100));
-	} else if (amount >= 501 && amount < 1001) {
+	} else if (amount >= 101 && amount <= 250) {
 		final_price = final_price * (1 - (3 * step / 100));
-	} else if (amount >= 1001) {
+	} else if (amount >= 251 && amount <= 500) {
 		final_price = final_price * (1 - (4 * step / 100));
+	} else if (amount >= 501 && amount <= 700) {
+		final_price = final_price * (1 - (5 * step / 100));
+	} else if (amount >= 701 && amount <= 1000) {
+		final_price = final_price * (1 - (6 * step / 100));
+	} else if (amount >= 1001) {
+		final_price = final_price * (1 - (7 * step / 100));
 	}
 
 	return Math.ceil(final_price);
