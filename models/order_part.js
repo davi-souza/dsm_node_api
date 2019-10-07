@@ -14,6 +14,7 @@ class OrderPart extends Model {
 			finishing: {
 				type: Sequelize.ENUM(
 					'STANDARD',
+					'PRECISION',
 					'RECTIFIED',
 					'POLISHED',
 				),
@@ -24,6 +25,7 @@ class OrderPart extends Model {
 					'HIGH',
 					'MEDIUM',
 					'LOW',
+					'VERY_LOW',
 				),
 				allowNull: false,
 				defaultValue: 'HIGH',

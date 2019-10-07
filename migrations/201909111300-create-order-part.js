@@ -48,6 +48,7 @@ module.exports = {
 			finishing: {
 				type: Sequelize.ENUM(
 					'STANDARD',
+					'PRECISION',
 					'RECTIFIED',
 					'POLISHED',
 				),
@@ -59,6 +60,7 @@ module.exports = {
 					'HIGH',
 					'MEDIUM',
 					'LOW',
+					'VERY_LOW',
 				),
 				allowNull: false,
 				defaultValue: 'HIGH',
