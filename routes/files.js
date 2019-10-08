@@ -39,7 +39,11 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			upload_promise
 		]);
 
-		const {volume, raw_material_volume} = part_volumes;
+		const {
+			volume,
+			raw_material_volume,
+			boundbox_dimensions,
+		} = part_volumes.data;
 
 		const {key} = upload_res;
 

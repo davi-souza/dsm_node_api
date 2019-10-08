@@ -16,8 +16,8 @@ async function create_part(name, storage, volume, raw_material_volume) {
 			id: uuid_v4(),
 			name,
 			storage,
-			volume: parseInt(volume*100, 10),
-			raw_material_volume: parseInt(raw_material_volume*100, 10),
+			volume: parseInt(volume, 10),
+			raw_material_volume: parseInt(raw_material_volume, 10),
 		});
 
 		return {
