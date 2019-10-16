@@ -23,6 +23,22 @@ class Part extends Model {
 				type: Sequelize.BIGINT,
 				allowNull: false,
 			},
+			x_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			y_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			z_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			additional_info: {
+				type: Sequelize.STRING,
+				allowNull: true,
+			},
 		}, {
 			tableName: 'part',
 			freezeTableName: true,

@@ -2,9 +2,7 @@ const db = require('../../models');
 const { CustomError } = require('../../libs/error');
 
 function process_treatment(treatment) {
-	return {
-		...treatment.dataValues,
-	};
+	return treatment.toJSON();
 }
 
 /**
@@ -28,7 +26,7 @@ async function get_heat_treatment(id) {
 			where: { id, },
 		});
 
-		return process_treatment(heat_treatment);
+		return heat_treatment.toJSON();
 	} catch (err) {
 		console.warn(err);
 		throw new CustomError(err.message, 500);
@@ -56,7 +54,7 @@ async function get_superficial_treatment(id) {
 			where: { id, },
 		});
 
-		return process_treatment(superficial_treatment);
+		return superficial_treatment.toJSON();
 	} catch (err) {
 		console.warn(err);
 		throw new CustomError(err.message, 500);

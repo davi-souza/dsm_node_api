@@ -94,7 +94,6 @@ function part_price_calc(item) {
 	const sub_total = Object.values(item_prices).reduce((sum, current) => sum + current, 0);
 	item_prices.supplier = Math.ceil(sub_total * supplier_profit_rate(item.amount));
 	item_prices.mech4u = Math.ceil((item_prices.supplier + sub_total) * mech4u_profit_rate(item.amount));
-	console.log(item_prices);
 
 	return {
 		...item_prices,

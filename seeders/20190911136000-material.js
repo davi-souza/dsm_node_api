@@ -143,7 +143,7 @@ module.exports = {
 						created_at: new Date(),
 						hardness: 'MEDIUM',
 						heat_treatments: [
-							'cbb8a58b-2e5f-4c72-8b21-e097c5c4c4a5',
+							//'cbb8a58b-2e5f-4c72-8b21-e097c5c4c4a5',
 							'fb829a44-ed10-4333-897a-c17eb6eb26f7',
 						],
 						superficial_treatments: [
@@ -264,7 +264,11 @@ module.exports = {
 						heat_treatments: [
 							'cbb8a58b-2e5f-4c72-8b21-e097c5c4c4a5'
 						],
-						superficial_treatments: [],
+						superficial_treatments: [
+							'93305296-6767-4f5c-9de9-c1b9a8c67542',
+							'0f325cd8-d0d9-466d-8424-d3c0d8af6e2e',
+							'f403b3bd-5d64-4eea-9498-8a543d3bc07e',
+						],
 					},
 				],
 			},

@@ -1,7 +1,7 @@
 const { handle_graphql_error } = require('../../libs/error');
 const { get_treatments } = require('../../libs/part/treatment');
 const { get_batch_info } = require('../../libs/part/batch');
-const { get_part } = require('../../services/db/part');
+const { get_part, update_part } = require('../../services/db/part');
 const { get_material_type } = require('../../services/db/material');
 const { part_price_calc } = require('../../services/analysis/price');
 const { get_mail_info } = require('../../services/analysis/mail');
@@ -19,6 +19,7 @@ async function PartOptionsResolver(_, {input}) {
 			marking,
 			knurled,
 			report,
+			additional_info,
 			amount,
 		} = input;
 
@@ -29,6 +30,12 @@ async function PartOptionsResolver(_, {input}) {
 			get_part(part_id),
 			get_material_type(material_type_id),
 		]);
+
+		if (part.additional_info !== additional_info) {
+			update_part(part.id, {additional_info});
+
+			part.additional_info = additional_info;
+		}
 
 		const {
 			heat_treatment,
@@ -52,6 +59,8 @@ async function PartOptionsResolver(_, {input}) {
 		return {
 			id: part.id,
 			name: part.name,
+			dimensions: `${(part.x_length/100).toFixed(2)}mm x ${(part.y_length/100).toFixed(2)}mm x ${(part.z_length/100).toFixed(2)}mm`,
+			auxiliary_files: part.auxiliaryFiles,
 			material_type: {
 				id: material_type.id,
 				name: material_type.name,
@@ -70,6 +79,7 @@ async function PartOptionsResolver(_, {input}) {
 			marking,
 			knurled,
 			report,
+			additional_info: part.additional_info,
 			amount,
 			unit_price: total,
 		};

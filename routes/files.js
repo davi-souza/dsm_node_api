@@ -14,6 +14,10 @@ const { get_materials } = require('../services/db/material');
 const upload = multer();
 
 router.post('/upload', upload.single('file'), async function(req, res, next) {
+	function get_dimensions({x, y, z}) {
+		return `${(x.length/100).toFixed(2)}mm x ${(y.length/100).toFixed(2)}mm x ${(z.length/100).toFixed(2)}mm`;
+	}
+		
 	try {
 		if (!req.file) {
 			throw new CustomError('Por favor inserir um arquivo', 400);
@@ -21,13 +25,13 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 
 		const { originalname, buffer } = req.file;
 
-		const extension = originalname.split('.').pop(); 
+		const extension = originalname.split('.').pop().toLowerCase(); 
 
 		if (!['stp', 'step'].includes(extension)) {
 			throw new CustomError('O arquivo deve ter extensão ".step"', 400);
 		}
 
-		const part_volumes_promise = get_part_volume(originalname, buffer);
+		const part_volumes_promise = get_part_volume(buffer);
 
 		const upload_promise = upload_file({
 			filename: originalname,
@@ -51,7 +55,8 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			originalname,
 			key,
 			volume,
-			raw_material_volume
+			raw_material_volume,
+			boundbox_dimensions
 		);
 
 		const materials_promise = get_materials();
@@ -79,13 +84,14 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 				name: materials[0].material_types[0].name,
 			};
 
-
 		res
 			.status(201)
 			.json({
 				data: {
 					id: new_part.id,
 					name: new_part.name,
+					dimensions: get_dimensions(boundbox_dimensions),
+					auxiliary_files: [],
 					material_type,
 					heat_treatment: null,
 					superficial_treatment: null,
@@ -103,6 +109,7 @@ router.post('/upload', upload.single('file'), async function(req, res, next) {
 			.end();
 
 	} catch (err) {
+		console.warn(err);
 		const error = process_error(err);
 
 		res
@@ -131,6 +138,12 @@ router.post('/upload/auxiliary', upload.single('file'), async function(req, res,
 
 		const {originalname, buffer} = req.file;
 
+		const extension = originalname.split('.').pop().toLowerCase(); 
+
+		if (!['pdf'].includes(extension)) {
+			throw new CustomError('O arquivo deve ter extensão ".pdf"', 400);
+		}
+
 		const {key} = await upload_file({
 			filename: originalname,
 			buffer,
@@ -146,14 +159,14 @@ router.post('/upload/auxiliary', upload.single('file'), async function(req, res,
 			.status(201)
 			.json({
 				data: {
-					name: originalname,
-					key,
+					...new_auxiliary_file,
 				},
 				errors: null,
 			})
 			.end();
 
 	} catch (err) {
+		console.warn(err);
 		const error = process_error(err);
 
 		res

@@ -46,12 +46,11 @@ async function login(email, password) {
 		}
 
 		const addresses = fetched_user.dataValues.addresses.map(address => ({
-			...address.dataValues,
+			...address.toJSON(),
 		}));
-		console.log(addresses);
 
 		const jwt_payload = {
-			...fetched_user.dataValues,
+			...fetched_user.toJSON(),
 			addresses,
 		};
 

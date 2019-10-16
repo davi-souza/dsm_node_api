@@ -45,6 +45,7 @@ const PartOptionsInputType = new GraphQLInputObjectType({
 		knurled: { type: GraphQLBoolean, },
 		screw: { type: ScrewInputType, },
 		report: { type: ReportEnumType, },
+		additional_info: { type: GraphQLString, },
 		amount: { type: new GraphQLNonNull(GraphQLInt), },
 	}),
 });
@@ -54,6 +55,15 @@ const PartBatchInfoInputType = new GraphQLInputObjectType({
 	fields: () => ({
 		parts: { type: new GraphQLNonNull(new GraphQLList(PartOptionsInputType)), },
 		delivery: { type: new GraphQLNonNull(DeliveryEnumType), },
+	}),
+});
+
+const AuxiliaryFileType = new GraphQLObjectType({
+	name: 'AuxiliaryFileType',
+	fields: () => ({
+		id: { type: new GraphQLNonNull(GraphQLString), },
+		name: { type: new GraphQLNonNull(GraphQLString), },
+		storage: { type: new GraphQLNonNull(GraphQLString), },
 	}),
 });
 
@@ -70,6 +80,8 @@ const PartInfoType = new GraphQLObjectType({
 	fields: () => ({
 		id: { type: new GraphQLNonNull(GraphQLString), },
 		name: { type: new GraphQLNonNull(GraphQLString), },
+		dimensions: { type: new GraphQLNonNull(GraphQLString), },
+		auxiliary_files: { type: new GraphQLNonNull(new GraphQLList(AuxiliaryFileType)), },
 		material_type: { type: new GraphQLNonNull(ClientMaterialAndTreatmentsType), },
 		heat_treatment: { type: ClientMaterialAndTreatmentsType, },
 		superficial_treatment: { type: ClientMaterialAndTreatmentsType, },
@@ -79,6 +91,7 @@ const PartInfoType = new GraphQLObjectType({
 		knurled: { type: GraphQLBoolean, },
 		screw: { type: ScrewType, },
 		report: { type: ReportEnumType, },
+		additional_info: { type: GraphQLString, },
 		amount: { type: new GraphQLNonNull(GraphQLInt), },
 		unit_price: { type: new GraphQLNonNull(GraphQLInt), },
 	}),

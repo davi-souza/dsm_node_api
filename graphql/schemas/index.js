@@ -16,7 +16,7 @@ const { PlaceOrderMutation } = require('../mutations/order');
 const rootQuery = new GraphQLObjectType({
 	name: 'RootQuery',
 	fields: () => ({
-		materials: QueryMaterials,
+		material_types: QueryMaterials,
 	}),
 });
 

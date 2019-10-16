@@ -29,6 +29,23 @@ module.exports = {
 				type: Sequelize.BIGINT,
 				allowNull: false,
 			},
+			x_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			y_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			z_length: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			additional_info: {
+				type: Sequelize.STRING,
+				allowNull: true,
+				defaultValue: null,
+			},
 			created_at: {
 				type: Sequelize.DATE,
 				defaultValue: Sequelize.NOW,

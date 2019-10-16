@@ -8,22 +8,7 @@ const { CustomError } = require('../../libs/error');
  *  @return {object}				The processed result
  */
 function process_material_type(material_type) {
-	function check_material() {
-		if (!material_type.material) {
-			return {};
-		}
-
-		return {
-			material: material_type.material.dataValues,
-		};
-	}
-
-	return {
-		...material_type.dataValues,
-		...check_material(),
-		heat_treatments: material_type.heat_treatments.map(ht => ht.dataValues),
-		superficial_treatments: material_type.superficial_treatments.map(st => st.dataValues),
-	};
+	return material_type.toJSON();
 }
 
 /** Gets the query result of 'get_materials'
@@ -32,10 +17,7 @@ function process_material_type(material_type) {
  *  @return {object}			The processed result
  */
 function process_material(material) {
-	return {
-		...material.dataValues,
-		material_types: material.material_types.map(process_material_type),
-	};
+	return material.toJSON();
 }
 
 /** Fetch materials and material_types
@@ -105,13 +87,11 @@ async function get_materials() {
 			return [];
 		}
 
-		const fetched_materials = materials.map(process_material);
-
-		cache.materials = fetched_materials;
+		cache.materials = materials.map(process_material);
 
 		cache.updated_at = new Date();
 
-		return fetched_materials;
+		return cache.materials;
 	} catch (err) {
 		console.warn(err);
 
@@ -127,7 +107,11 @@ async function get_materials() {
  * @return {object}	Material type model
  */
 async function get_material_types(where = {}) {
-		try {
+	try {
+		if (!!cache.material_types && cache.material_types.length > 0) {
+			return Promise.resolve(cache.material_types);
+		}
+
 		const material_types = await db.MaterialType.findAll({
 			attributes: [
 				'id',
@@ -137,14 +121,6 @@ async function get_material_types(where = {}) {
 				'hardness',
 			],
 			include: [
-				{
-					model: db.Material,
-					as: 'material',
-					attributes: [
-						'id',
-						'name',
-					],
-				},
 				{
 					model: db.HeatTreatment,
 					as: 'heat_treatments',
@@ -181,10 +157,12 @@ async function get_material_types(where = {}) {
 		});
 
 		if (!material_types) {
-			return [];
+			return Promise.resolve([]);
 		}
 
-		return material_types.map(process_material_type);
+		cache.material_types = material_types.map(process_material_type);
+
+		return cache.material_types;
 	} catch (err) {
 		console.warn(err);
 
@@ -255,7 +233,7 @@ async function get_material_type(id) {
 			throw new CustomError('Tipo de material não existe', 400);
 		}
 
-		return process_material_type(material_type);
+		return material_type.toJSON();
 	} catch (err) {
 		console.warn(err);
 

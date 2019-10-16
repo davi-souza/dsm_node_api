@@ -10,7 +10,7 @@ const { CustomError } = require('../../libs/error');
  * @param {number} raw_material_volume	Raw material volume of the part
  * @return {object} 					Return the created part
  */
-async function create_part(name, storage, volume, raw_material_volume) {
+async function create_part(name, storage, volume, raw_material_volume, boundbox_dimensions) {
 	try {
 		const part = await db.Part.create({
 			id: uuid_v4(),
@@ -18,11 +18,12 @@ async function create_part(name, storage, volume, raw_material_volume) {
 			storage,
 			volume: parseInt(volume, 10),
 			raw_material_volume: parseInt(raw_material_volume, 10),
+			x_length: parseInt(boundbox_dimensions.x.length, 10),
+			y_length: parseInt(boundbox_dimensions.y.length, 10),
+			z_length: parseInt(boundbox_dimensions.z.length, 10),
 		});
 
-		return {
-			...part.dataValues,
-		};
+		return part.toJSON();
 	} catch (err) {
 		console.warn(err);
 
@@ -40,11 +41,10 @@ async function get_parts(where = {}) {
 				['created_at', 'ASC'],
 				['name', 'ASC'],
 			],
-			raw: true,
 			where,
 		});
 
-		return parts;
+		return parts.map(part => part.toJSON());
 	} catch (err) {
 		console.warn(err);
 
@@ -71,11 +71,21 @@ function get_parts_by_ids(ids) {
 async function get_part(id) {
 	try {
 		const part = await db.Part.findOne({
+			include: [
+				{
+					model: db.AuxiliaryFile,
+					as: 'auxiliaryFiles',
+					attributes: [
+						'id',
+						'name',
+						'storage',
+					],
+				},
+			],
 			where: { id },
-			raw: true,
 		});
 
-		return part;
+		return part.toJSON();
 	} catch (err) {
 		console.warn(err);
 
@@ -85,7 +95,7 @@ async function get_part(id) {
 
 /**
  * Create a auxiliary file at db
- * @param {number} part_di				Part's id
+ * @param {number} part_id				Part's id
  * @param {string} storage				Storage key (path)
  * @param {string} name					File's name
  * @return {object} 					Return the created aux file
@@ -99,9 +109,27 @@ async function create_auxiliary_file(part_id, name, storage) {
 			storage,
 		});
 
-		return {
-			...aux_file.dataValues,
-		};
+		return aux_file.toJSON();
+	} catch (err) {
+		console.warn(err);
+
+		throw new CustomError('Não foi possível criar arquivo auxiliar', 500);
+	}
+}
+
+/**
+ * Update part
+ * @param {number} part_id				Part's id
+ * @param {object} changes				Changes to make
+ */
+async function update_part(part_id, changes) {
+	try {
+		const x = await db.Part.update(
+			changes,
+			{where: { id: part_id }, }
+		);
+
+		return;
 	} catch (err) {
 		console.warn(err);
 
@@ -114,5 +142,6 @@ module.exports = {
 	get_parts,
 	get_parts_by_ids,
 	get_part,
+	update_part,
 	create_auxiliary_file,
 };
