@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.scss"],"names":[],"mappings":"AAAA,UACC,cAAe,CAGhB,KACC,kCAAmC,CACnC,iCAAkC","file":"main.13f4e627.chunk.css","sourcesContent":["html, body {\n\tfont-size: 16px;\n}\n\nbody {\n\t-webkit-font-smoothing: antialiased;\n\t-moz-osx-font-smoothing: grayscale;\n}\n"]}

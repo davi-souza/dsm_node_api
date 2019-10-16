@@ -1,8 +1,7 @@
-const axios = require('axios');
-const FormData = require('form-data');
+const api_key = process.env.VOLUME_SERVICE_API_KEY;
+const request = require('request');
 const { CustomError } = require('../../libs/error');
 const analysis_url = `${process.env.VOLUME_SERVICE_URL}/api/analysis/volume`;
-const api_key = process.env.VOLUME_SERVICE_API_KEY;
 
 /**
  * Sends file to Analysis Service and returns result
@@ -11,30 +10,38 @@ const api_key = process.env.VOLUME_SERVICE_API_KEY;
  *             {number} 	volume
  *             {number} 	raw_material_volume
  */
-async function get_part_volume(buffer) {
-	try {
-		const form = new FormData();
-
-		form.append('file', buffer);
-		console.log(buffer);
-		console.log(form);
-
-		const res = await axios.post(analysis_url, form, {
-			headers: {
-				'X-API-Key': api_key,
+function get_part_volume(buffer, filename, mimetype) {
+	return new Promise(function(resolve, reject) {
+		let form_data = {
+			quality: 80,
+			file: {
+				value: buffer,
+				options: {
+					contentType: mimetype,
+					filename,
+				},
 			},
+		};
+
+		request.post({
+			url: analysis_url,
+			formData: form_data,
+			headers: {'x-api-key': api_key},
+		}, function(err, res, body) {
+			if (err) {
+				reject(new CustomError('Não foi possível enviar arquivo', 500));
+			}
+
+
+			if (res.statusCode !== 200) {
+				const {errors} = JSON.parse(body);
+
+				reject(new CustomError(errors[0].message, res.statusCode));
+			}
+
+			resolve(JSON.parse(body));
 		});
-
-		return res.data;
-	} catch (err) {
-		console.warn(err);
-
-		if (err.response) {
-			throw new CustomError(err.message, err.response.status);
-		}
-
-		throw new CustomError(err.message, 500);
-	}
+	});
 }
 
 module.exports = {

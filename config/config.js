@@ -3,7 +3,7 @@ module.exports = {
 		"username": "mech4u",
 		"password": "123",
 		"database": "mech4u_dev",
-		"host": "platform_api_db",
+		"host": "api_db",
 		"dialect": "postgres",
 	},
 	"test": {
