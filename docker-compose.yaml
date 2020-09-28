@@ -2,7 +2,7 @@ version: "3"
 
 services:
     api:
-        image: node:10-alpine
+        image: node:12.18.4-stretch-slim
         container_name: api
         working_dir: /mech4u/platform_api/
         command: yarn start:dev
@@ -16,18 +16,22 @@ services:
             - 8000:8000
 
     api_db:
-        image: postgres:11-alpine
+        image: postgres:12-alpine
         container_name: api_db
         environment:
             POSTGRES_PASSWORD: 123
             POSTGRES_USER: mech4u
             POSTGRES_DB: mech4u_dev
         volumes:
-            - ./platform_api_db/:/var/lib/postgresql/data/:consistent
+            - machining_db_volume:/var/lib/postgresql/data/:consistent
         ports:
             - 5432:5432
 
 networks:
     default:
         external:
-            name: mech4u_network
+            name: ds_network
+
+volumes:
+    machining_db_volume:
+        external: true
